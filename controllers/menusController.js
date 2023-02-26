@@ -1,6 +1,7 @@
 const Menu = require("../models/Menu");
 const User = require("../models/User");
 const Recipe = require("../models/Recipe");
+const WeeklyMenu = require("../models/WeeklyMenu");
 const asyncHandler = require("express-async-handler");
 
 // Calculate the Totalcost of a given object array of recipe ids
@@ -170,17 +171,38 @@ const deleteMenu = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Menu ID required" });
   }
 
+  // Check If Menu is assigned to a Weekly Menu
+  const wklyMenu = await Menu.findOne({
+    $or: [
+      { "monday.menu": id },
+      { "tuesday.menu": id },
+      { "wednesday.menu": id },
+      { "thursday.menu": id },
+      { "friday.menu": id },
+      { "saturday.menu": id },
+      { "sunday.menu": id },
+    ],
+  })
+    .lean()
+    .exec();
+
+  if (wklyMenu) {
+    return res
+      .status(400)
+      .json({
+        message:
+          "Menu has assigned weekly menu, please delete the weekly menu first",
+      });
+  }
+
   // Confirm menu exists to delete
   const menu = await Menu.findById(id).exec();
-
   if (!menu) {
     return res.menu_status(400).json({ message: "Menu not found" });
   }
 
   const result = await menu.deleteOne();
-
   const reply = `Menu '${result.name}' with ID ${result._id} deleted`;
-
   res.json(reply);
 });
 

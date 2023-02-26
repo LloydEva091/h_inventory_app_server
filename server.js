@@ -33,6 +33,7 @@ app.use('/api/auth', require('./routes/authRoutes'))
 app.use('/api/stocks', require('./routes/stockRoutes'));
 app.use('/api/recipes', require('./routes/recipeRoutes'));
 app.use('/api/menus', require('./routes/menusRoutes'));
+app.use('/api/weekly', require('./routes/weeklyMenuRoutes'));
 
 // A catch all to send to user that access page that does not exist
 app.all('*', (req,res)=>{
