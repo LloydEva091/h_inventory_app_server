@@ -15,6 +15,8 @@ const stockLevelChecker = (min, max, current) => {
     }
 };
 
+
+
 // @desc Get all stocks 
 // @route GET /stocks
 // @access Private
@@ -41,7 +43,7 @@ const getAllStocks = asyncHandler(async (req, res) => {
 // @route POST /stocks
 // @access Private
 const createNewStock = asyncHandler(async (req, res) => {
-    const { user, name, categories, cost, current_stock, min_stock, max_stock, unit, currency } = req.body;
+    const { user, name, categories, cost, current_stock, min_stock, max_stock, unit, currency, per_unit, per_stock, per_cost } = req.body;
     let  stock_status = ''  // Using let, as stock_status will change depending on current stock level
 
 
@@ -64,7 +66,14 @@ const createNewStock = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'Unit field are required' }); 
     } else if (!currency) {
         return res.status(400).json({ message: 'Currency field are required' });
+    } else if (!per_unit) {
+        return res.status(400).json({ message: 'Per Unit field are required' });
+    } else if (!per_stock) {
+        return res.status(400).json({ message: 'Per Stock field are required' });
+    } else if (!per_cost) {
+        return res.status(400).json({ message: 'Per Stock Cost field are required' });
     } 
+
 
 
     // Check stock status level base on current stock and min stock
@@ -73,7 +82,7 @@ const createNewStock = asyncHandler(async (req, res) => {
 
     try {
         // Create and store the new user 
-        const newStock = new Stock({ user, name, categories, cost, unit, current_stock, min_stock, max_stock, currency, stock_status });
+        const newStock = new Stock({ user, name, categories, cost, unit, current_stock, min_stock, max_stock, currency, stock_status, per_stock, per_unit, per_cost });
         const savedStock = await newStock.save();
         res.status(201).json({ message: 'New stock created' });
     } catch (error) {
@@ -89,14 +98,14 @@ const createNewStock = asyncHandler(async (req, res) => {
 // @route PATCH /stocks
 // @access Private
 const updateStock = asyncHandler(async (req, res) => {
-    const { id, user, name, categories, cost, currency, current_stock, unit, min_stock, max_stock } = req.body;
+    const { id, user, name, categories, cost, currency, current_stock, unit, min_stock, max_stock, per_stock, per_unit, per_cost } = req.body.body;
     let { stock_status } = req.body;
 
     // Confirm data
     // if (!id || !user || !name || !Array.isArray(categories) || !cost || !current_stock || !min_stock || !max_stock  ||typeof completed !== 'boolean') {
     //     return res.status(400).json({ message: 'All fields are required' });
     // }
-    // console.log(req.body)
+    console.log("hhhheeee",req.body)
 
     if (!user) {
         return res.status(400).json({ message: 'User field are required' });
@@ -114,9 +123,15 @@ const updateStock = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'Max stock field are required' });
     } else if (!unit) {
         return res.status(400).json({ message: 'Unit field are required' });
-    } else if (!currency) {
+    } else if (!currency[0]) {
         return res.status(400).json({ message: 'Currency field are required' });
-    }
+    } else if (!per_unit) {
+        return res.status(400).json({ message: 'Per Unit field are required' });
+    } else if (!per_stock) {
+        return res.status(400).json({ message: 'Per Stock field are required' });
+    } else if (!per_cost) {
+        return res.status(400).json({ message: 'Per Stock Cost field are required' });
+    } 
 
 
 
@@ -146,6 +161,9 @@ const updateStock = asyncHandler(async (req, res) => {
     stock.unit = unit;
     stock.currency = currency;
     stock.current_stock = current_stock;
+    stock.per_stock = per_stock;
+    stock.per_unit = per_unit;
+    stock.per_cost = per_cost
     stock.min_stock = min_stock;
     stock.max_stock = max_stock;
     stock.stock_status = stock_status;
@@ -154,6 +172,81 @@ const updateStock = asyncHandler(async (req, res) => {
 
     res.json(`'${updatedStock.name}' updated`);
 });
+
+
+
+// // @desc Update a stock
+// // @route PATCH /stocks
+// // @access Private
+// const updateStock = asyncHandler(async (req, res) => {
+//     const stocksToUpdate = req.body;
+//     console.log(req.body)
+//     let updatedStocks; // declare variable here
+  
+//     try {
+//       updatedStocks = await Promise.all(
+//         stocksToUpdate.map(async (stock) => {
+//           const {
+//             id,
+//             user,
+//             name,
+//             categories,
+//             cost,
+//             currency,
+//             current_stock,
+//             unit,
+//             min_stock,
+//             max_stock,
+//             per_stock,
+//             per_unit,
+//             per_cost,
+//           } = stock;
+//           let { stock_status } = stock;
+  
+//           // Confirm stock exists to update
+//           const existingStock = await Stock.findById(id);
+  
+//           if (!existingStock) {
+//             return res.status(400).json({ message: "Stock not found" });
+//           }
+  
+//           // Check for duplicate name
+//           const duplicate = await Stock.findOne({ name }).lean().exec();
+  
+//           // Allow renaming of the original stock
+//           if (duplicate && duplicate?._id.toString() !== id) {
+//             return res.status(409).json({ message: "Duplicate stock title" });
+//           }
+  
+//           // Check stock status level base on current stock and min stock
+//           stock_status = stockLevelChecker(min_stock, max_stock, current_stock);
+  
+//           // Update stock data
+//           existingStock.user = user;
+//           existingStock.name = name;
+//           existingStock.categories = categories;
+//           existingStock.cost = cost;
+//           existingStock.unit = unit;
+//           existingStock.currency = currency;
+//           existingStock.current_stock = current_stock;
+//           existingStock.per_stock = per_stock;
+//           existingStock.per_unit = per_unit;
+//           existingStock.per_cost = per_cost;
+//           existingStock.min_stock = min_stock;
+//           existingStock.max_stock = max_stock;
+//           existingStock.stock_status = stock_status;
+  
+//           const updatedStock = await existingStock.save();
+  
+//           return updatedStock;
+//         })
+//       );
+//     } catch (error) {
+//       res.status(500).json({ message: "Server error" });
+//     }
+  
+//     res.json(updatedStocks);
+//   });
 
 // @desc Delete a stock
 // @route DELETE /stocks

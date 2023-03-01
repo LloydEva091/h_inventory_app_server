@@ -153,41 +153,6 @@ const createWeeklyMenu = asyncHandler(async (req, res) => {
 const updateWeeklyMenu = asyncHandler(async (req, res) => {
   const weeklyMenu = await WeeklyMenu.findById(req.body.id);
 
-//   const {
-//     id,
-//     user,
-//     weekNumber,
-//     year,
-//     monday,
-//     tuesday,
-//     wednesday,
-//     thursday,
-//     friday,
-//     saturday,
-//     sunday,
-//   } = req.body;
-
-//   // Confirm data
-//   if (!user) {
-//     return res.status(400).json({ message: "User field are required" });
-//   } else if (!year) {
-//     return res.status(400).json({ message: "Year field are required" });
-//   } else if (!monday) {
-//     return res.status(400).json({ message: "Monday field are required" });
-//   } else if (!tuesday) {
-//     return res.status(400).json({ message: "Tuesday field are required" });
-//   } else if (!wednesday) {
-//     return res.status(400).json({ message: "Wednesday Cost field are required" });
-//   } else if (!thursday) {
-//     return res.status(400).json({ message: "Thursday field are required" });
-//   } else if (!friday) {
-//     return res.status(400).json({ message: "Friday field are required" });
-//   } else if (!saturday) {
-//     return res.status(400).json({ message: "Saturday field are required" });
-//   } else if (!sunday) {
-//     return res.status(400).json({ message: "Sunday field are required" });
-//   }
-
   // Confirm Weekly Menu Exist
   if (!weeklyMenu) {
     return res.status(404).json({ message: "Weekly menu not found" });

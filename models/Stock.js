@@ -21,6 +21,11 @@ const stockSchema = new mongoose.Schema(
             required: true,
             default:0,
         },
+        per_cost: {
+            type: Number,
+            required: true,
+            default:0,
+        },
         currency: [{
             type: String,
             default: 'GBP',
@@ -32,6 +37,15 @@ const stockSchema = new mongoose.Schema(
             default: 0,
         },
         unit: [{
+            type: String,
+            required: true
+        }],
+        per_stock: {
+            type: Number,
+            required: true,
+            default: 0
+        },
+        per_unit: [{
             type: String,
             required: true
         }],
@@ -47,14 +61,6 @@ const stockSchema = new mongoose.Schema(
             type: String,
             default: "Good"
         }]
-        // image: {
-        //     type: String,
-        //     default: ''
-        // },
-        // special_property: {
-        //     type: String,
-        //     default: 'N/A'
-        // }
     },
     {
         timestamps: true
