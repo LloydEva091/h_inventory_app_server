@@ -98,14 +98,14 @@ const createNewStock = asyncHandler(async (req, res) => {
 // @route PATCH /stocks
 // @access Private
 const updateStock = asyncHandler(async (req, res) => {
-    const { id, user, name, categories, cost, currency, current_stock, unit, min_stock, max_stock, per_stock, per_unit, per_cost } = req.body.body;
+    const { id, user, name, categories, cost, currency, current_stock, unit, min_stock, max_stock, per_stock, per_unit, per_cost } = req.body;
     let { stock_status } = req.body;
 
+    
     // Confirm data
     // if (!id || !user || !name || !Array.isArray(categories) || !cost || !current_stock || !min_stock || !max_stock  ||typeof completed !== 'boolean') {
     //     return res.status(400).json({ message: 'All fields are required' });
     // }
-    console.log("hhhheeee",req.body)
 
     if (!user) {
         return res.status(400).json({ message: 'User field are required' });
