@@ -166,34 +166,33 @@ const updateMenu = asyncHandler(async (req, res) => {
 const deleteMenu = asyncHandler(async (req, res) => {
   const { id } = req.body;
 
+  // console.log(id)
   // Confirm data
   if (!id) {
     return res.status(400).json({ message: "Menu ID required" });
   }
 
   // Check If Menu is assigned to a Weekly Menu
-  const wklyMenu = await Menu.findOne({
-    $or: [
-      { "monday.menu": id },
-      { "tuesday.menu": id },
-      { "wednesday.menu": id },
-      { "thursday.menu": id },
-      { "friday.menu": id },
-      { "saturday.menu": id },
-      { "sunday.menu": id },
-    ],
-  })
-    .lean()
-    .exec();
+  // const wklyMenu = await Menu.findOne({
+  //   $or: [
+  //     { "monday.menu": id },
+  //     { "tuesday.menu": id },
+  //     { "wednesday.menu": id },
+  //     { "thursday.menu": id },
+  //     { "friday.menu": id },
+  //     { "saturday.menu": id },
+  //     { "sunday.menu": id },
+  //   ],
+  // })
+  //   .lean()
+  //   .exec();
 
-  if (wklyMenu) {
-    return res
-      .status(400)
-      .json({
-        message:
-          "Menu has assigned weekly menu, please delete the weekly menu first",
-      });
-  }
+  // if (wklyMenu) {
+  //   return res.status(400).json({
+  //     message:
+  //       "Menu has assigned weekly menu, please delete the weekly menu first",
+  //   });
+  // }
 
   // Confirm menu exists to delete
   const menu = await Menu.findById(id).exec();

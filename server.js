@@ -1,4 +1,7 @@
+// Load environment variables from .env file
 require('dotenv').config();
+
+// Import required modules
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -10,24 +13,26 @@ const corsOptions = require('./config/corsOption');
 const connectDB = require('./config/dbConn');
 const mongoose = require('mongoose');
 
+// Define the port on which the server will listen for requests
 const PORT = process.env.PORT || 3500;
 
+// Connect to the MongoDB database
 connectDB();
 
+// Log the current environment
 console.log(process.env.NODE_ENV);
 
-app.use(logger);
-
-app.use(cors(corsOptions));
-app.use(express.json());
-app.use(cookieParser());
+// Use the following middleware for every request
+app.use(logger); // log each incoming request
+app.use(cors(corsOptions)); // allow cross-origin requests
+app.use(express.json()); // parse incoming requests with JSON payloads
+app.use(cookieParser()); // parse cookies from incoming requests
 
 // Tell express where to find static files 
 app.use('/', express.static(path.join(__dirname, 'public')));
-//app.use(express.static('public'));  // works as it depends where our server.js is
 
+// Define routes for the different API endpoints
 app.use('/', require('./routes/root'));
-
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'))
 app.use('/api/stocks', require('./routes/stockRoutes'));
@@ -47,13 +52,16 @@ app.all('*', (req,res)=>{
     }
 });
 
+// Use the errorHandler middleware to handle errors
 app.use(errorHandler);
 
+// When the MongoDB connection is open, start the server
 mongoose.connection.once('open', () => {
     console.log('Connected to mongoDB');
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 });
 
+// When there is an error in the MongoDB connection, log it
 mongoose.connection.on('error', err => {
     console.log(err);
     logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log');

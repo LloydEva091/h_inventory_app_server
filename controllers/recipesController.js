@@ -165,9 +165,9 @@ const deleteRecipe = asyncHandler(async (req, res) => {
   // Check If Recipe is assigned to a Menu
   const menu = await Menu.findOne({
     $or: [
-      { "breakfast.recipe": id },
-      { "lunch.recipe": id },
-      { "dinner.recipe": id },
+      { "breakfasts.recipe": id },
+      { "lunches.recipe": id },
+      { "dinners.recipe": id },
     ],
   })
     .lean()

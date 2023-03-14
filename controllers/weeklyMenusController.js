@@ -176,7 +176,8 @@ const updateWeeklyMenu = asyncHandler(async (req, res) => {
   // Update other fields if provided
   weeklyMenu.weekNumber = req.body.weekNumber || weeklyMenu.weekNumber;
   weeklyMenu.year = req.body.year || weeklyMenu.year;
-  weeklyMenu.weeklyMenuCost = req.body.weeklyMenuCost || weeklyMenu.weeklyMenuCost;
+  weeklyMenu.weeklyMenuCost =
+    req.body.weeklyMenuCost || weeklyMenu.weeklyMenuCost;
   weeklyMenu.currency = req.body.currency || weeklyMenu.currency;
   weeklyMenu.startDate = req.body.startDate || weeklyMenu.startDate;
   weeklyMenu.endDate = req.body.endDate || weeklyMenu.endDate;
@@ -190,21 +191,24 @@ const updateWeeklyMenu = asyncHandler(async (req, res) => {
 // @route DELETE /weeklyMenus/:id
 // @access Private
 const deleteWeeklyMenu = asyncHandler(async (req, res) => {
-  const weeklyMenu = await WeeklyMenu.findById(req.params.id);
+  const { id } = req.body;
+
+  // Confirm data
+  if (!id) {
+    return res.status(400).json({ message: "Recipe ID required" });
+  }
+
+  const weeklyMenu = await WeeklyMenu.findById(id);
 
   if (!weeklyMenu) {
     return res.status(404).json({ message: "Weekly menu not found" });
   }
 
-  if (weeklyMenu.user.toString() !== req.user._id.toString()) {
-    return res
-      .status(401)
-      .json({ message: "You are not authorized to delete this weekly menu" });
-  }
+  const result = await weeklyMenu.deleteOne();
 
-  await weeklyMenu.remove();
+  const reply = `Weekly menu with ID ${result._id} deleted`;
 
-  res.json({ message: "Weekly menu removed" });
+  res.json(reply);
 });
 
 module.exports = {

@@ -60,7 +60,11 @@ const stockSchema = new mongoose.Schema(
         stock_status: [{
             type: String,
             default: "Good"
-        }]
+        }],
+        isChecked:{
+            type: Boolean,
+            default: false
+        }
     },
     {
         timestamps: true

@@ -13,4 +13,6 @@ router.route('/')
 router.route('/:id')
     .patch(stocksController.updateStock)
 
+router.route('/check/:id').patch(stocksController.checkStock)
+
 module.exports = router;
