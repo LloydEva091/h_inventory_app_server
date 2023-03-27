@@ -1,6 +1,6 @@
 const allowedOrigins = [
     'http://localhost:3000',
-    'https://actualsite4321123.me'
+    'https://lloyd-proj-hons.duckdns.org'
 ]
 
 module.exports = allowedOrigins
